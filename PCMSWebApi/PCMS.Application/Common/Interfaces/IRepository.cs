@@ -1,4 +1,4 @@
-﻿namespace PCMS.Application.Interfaces
+﻿namespace PCMS.Application.Common.Interfaces
 {
     public interface IRepository<T>
     {

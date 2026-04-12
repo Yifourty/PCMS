@@ -1,4 +1,4 @@
-﻿using PCMS.Application.Interfaces;
+﻿using PCMS.Application.Common.Interfaces;
 
 namespace PCMS.Infrastructure.Data
 {
@@ -20,10 +20,8 @@ namespace PCMS.Infrastructure.Data
             _store.Remove(id);
         }
 
-
         public virtual T? GetById(Guid id) => _store.TryGetValue(id, out var entity) ? entity : null;
         
-
         public void Update(T entity)
         {
             var id = (Guid)entity.GetType().GetProperty("Id")?.GetValue(entity)!;

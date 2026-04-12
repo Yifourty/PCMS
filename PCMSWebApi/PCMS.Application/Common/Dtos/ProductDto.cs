@@ -1,4 +1,4 @@
-﻿namespace PCMS.Application.Dtos
+﻿namespace PCMS.Application.Common.Dtos
 {
     public record ProductDto(
         Guid Id,
