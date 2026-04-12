@@ -1,12 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PCMS.Application.Dtos
+﻿namespace PCMS.Application.Dtos
 {
-    internal class ProductDto
-    {
-    }
+    public record ProductDto(
+        Guid Id,
+        string Name,
+        string? Description,
+        string SKU,
+        decimal Price,
+        int Quantity,
+        Guid CategoryId
+    );
+
+    public record CreateProductDto(
+        string Name,
+        string SKU,
+        decimal Price,
+        int Quantity,
+        Guid CategoryId
+    );
 }
