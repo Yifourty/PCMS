@@ -14,4 +14,9 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PCMS.Application\PCMS.Application.csproj" />
+    <ProjectReference Include="..\PCMS.Infrastructure\PCMS.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
