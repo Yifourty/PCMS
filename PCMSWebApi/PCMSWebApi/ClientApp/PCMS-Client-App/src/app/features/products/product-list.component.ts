@@ -16,6 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ProductListComponent {
 
+
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
   loading = signal<boolean>(false);
@@ -109,5 +110,12 @@ export class ProductListComponent {
         pageSize: this.pageSizeControl.value || 10,
       })
       .subscribe((res) => this.products.set(res));
+  }
+
+  deleteProduct(productId: string) {
+    this.productService.delete(productId).subscribe({
+      next: () => this.reload(),
+      error: () => alert('Error deleting product'),
+    });
   }
 }
