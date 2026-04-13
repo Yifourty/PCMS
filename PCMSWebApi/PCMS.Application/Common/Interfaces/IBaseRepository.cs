@@ -1,6 +1,6 @@
 ﻿namespace PCMS.Application.Common.Interfaces
 {
-    public interface IRepository<T>
+    public interface IBaseRepository<T>
     {
         IEnumerable<T> GetAll();
         T? GetById(Guid id);

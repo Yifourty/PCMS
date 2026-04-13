@@ -2,7 +2,7 @@
 
 namespace PCMS.Infrastructure.Data
 {
-    public class InMemoryRepository<T> : IRepository<T> where T : class
+    public class InMemoryRepository<T> : IInMemoryProductRepository<T>, IBaseRepository<T> where T : class
     {
         protected readonly Dictionary<Guid, T> _store = new Dictionary<Guid, T>();
         public virtual IEnumerable<T> GetAll()
