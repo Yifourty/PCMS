@@ -1,6 +1,8 @@
-﻿namespace PCMS.Domain.Entities
+﻿using PCMS.Domain.Interfaces;
+
+namespace PCMS.Domain.Entities
 {
-    public class Product : IComparable<Product>
+    public class Product : IComparable<Product>, IEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = default!;

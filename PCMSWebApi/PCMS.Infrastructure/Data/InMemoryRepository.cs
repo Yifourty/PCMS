@@ -1,34 +1,39 @@
 ﻿using PCMS.Application.Common.Interfaces;
+using PCMS.Domain.Interfaces;
 
 namespace PCMS.Infrastructure.Data
 {
-    public class InMemoryRepository<T> : IInMemoryProductRepository<T>, IBaseRepository<T> where T : class
+    public class InMemoryRepository<T> : IBaseRepository<T> where T : class, IEntity
     {
-        protected readonly Dictionary<Guid, T> _store = new Dictionary<Guid, T>();
+        protected readonly Dictionary<Guid, T> _store = new();
+
         public virtual IEnumerable<T> GetAll()
         {
             return _store.Values;
         }
-        public void Add(T entity)
+
+        public virtual T? GetById(Guid id)
         {
-            var id = (Guid)entity.GetType().GetProperty("Id")?.GetValue(entity)!;
-            _store[id] = entity;
+            return _store.TryGetValue(id, out var entity) ? entity : null;
         }
 
-        public void Delete(Guid id)
+        public virtual void Add(T entity)
+        {
+            _store[entity.Id] = entity;
+        }
+
+        public virtual void Update(T entity)
+        {
+            if (_store.ContainsKey(entity.Id))
+            {
+                _store[entity.Id] = entity;
+            }
+        }
+
+        public virtual void Delete(Guid id)
         {
             _store.Remove(id);
         }
-
-        public virtual T? GetById(Guid id) => _store.TryGetValue(id, out var entity) ? entity : null;
-        
-        public void Update(T entity)
-        {
-            var id = (Guid)entity.GetType().GetProperty("Id")?.GetValue(entity)!;
-            if (_store.ContainsKey(id))
-            {
-                _store[id] = entity;
-            }
-        }
     }
+
 }

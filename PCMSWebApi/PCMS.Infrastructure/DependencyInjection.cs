@@ -12,8 +12,8 @@ namespace PCMS.Infrastructure
         public static IServiceCollection AddInfrastructureDI(this IServiceCollection services)
         {
 
-            services.AddSingleton<IBaseRepository<Product>, InMemoryRepository<Product>>();
-            services.AddSingleton<IBaseRepository<Category>, InMemoryRepository<Category>>();
+            services.AddSingleton<IProductRepository, InMemoryProductRepository>();
+            services.AddSingleton<ICategoryRepository, InMemoryCategoryRepository>();
             services.AddSingleton<ProductSearchEngine<Product>>();
             services.AddSingleton<SearchCache>();
 

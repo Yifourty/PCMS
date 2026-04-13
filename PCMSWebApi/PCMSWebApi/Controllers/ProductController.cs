@@ -5,137 +5,172 @@ using PCMS.Application.Common.Interfaces;
 using PCMS.Application.Common.Validators;
 using PCMS.Application.Common.Extensions;
 using PCMS.Domain.Entities;
+using PCMS.Infrastructure.Caching;
+using PCMS.Infrastructure.Search;
 
-namespace PCMS.Presentation.Controllers
+[ApiController]
+[Route("api/products")]
+public class ProductsController : ControllerBase
 {
-    public class ProductController : Controller
+    private readonly IProductRepository _productRepository;
+    private readonly ProductSearchEngine<Product> _searchEngine;
+    private readonly SearchCache _cache;
+
+    public ProductsController(
+        IProductRepository productRepository,
+        ProductSearchEngine<Product> searchEngine,
+        SearchCache cache)
     {
-        [HttpPost("manual")]
-        public async Task<IActionResult> CreateManual()
+        _productRepository = productRepository;
+        _searchEngine = searchEngine;
+        _cache = cache;
+    }
+
+    // GET /api/products?search=&categoryId=&page=&pageSize=
+    [HttpGet]
+    public IActionResult GetAll(
+        [FromQuery] string? search,
+        [FromQuery] Guid? categoryId,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        string cacheKey = $"{search}-{categoryId}-{page}-{pageSize}";
+
+        if (_cache.TryGet(cacheKey, out var cached))
+            return Ok(cached);
+
+        var products = _productRepository.GetAll();
+
+        // Filtering
+        products = products
+            .FilterByCategory(categoryId)
+            .SearchByName(search);
+
+        // Advanced search (fuzzy)
+        if (!string.IsNullOrWhiteSpace(search))
         {
-            using var reader = new StreamReader(Request.Body);
-            var body = await reader.ReadToEndAsync();
-
-            var dto = JsonSerializer.Deserialize<CreateProductDto>(body);
-
-            if (dto is null || !ProductValidator.IsValid(dto))
-                return BadRequest();
-
-            return Ok(dto);
+            products = _searchEngine.Search(
+                products,
+                search,
+                new Func<Product, string>[]
+                {
+                    p => p.Name,
+                    p => p.Description ?? ""
+                });
         }
 
+        // Pagination
+        var result = products
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
 
-        [HttpGet("{id}/custom")]
-        public IActionResult GetCustom(IInMemoryProductRepository<Product> _repo,Guid id)
+        _cache.Set(cacheKey, result);
+
+        return Ok(result);
+    }
+
+    // GET /api/products/{id}
+    [HttpGet("{id}")]
+    public IActionResult GetById(Guid id)
+    {
+        var product = _productRepository.GetById(id);
+
+        return product is null
+            ? NotFound()
+            : Ok(product);
+    }
+
+    // POST /api/products
+    [HttpPost]
+    public IActionResult Create([FromBody] CreateProductDto dto)
+    {
+        if (!ProductValidator.IsValid(dto))
+            return BadRequest("Invalid product");
+
+        var product = new Product
         {
-            var product = _repo.GetById(id);
+            Id = Guid.NewGuid(),
+            Name = dto.Name,
+            SKU = dto.SKU,
+            Price = dto.Price,
+            Quantity = dto.Quantity,
+            CategoryId = dto.CategoryId,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
 
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
+        _productRepository.Add(product);
 
-            return new ContentResult
-            {
-                Content = JsonSerializer.Serialize(product, options),
-                ContentType = "application/json"
-            };
-        }
+        return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
+    }
 
+    // PUT /api/products/{id}
+    [HttpPut("{id}")]
+    public IActionResult Update(Guid id, [FromBody] CreateProductDto dto)
+    {
+        var existing = _productRepository.GetById(id);
+        if (existing is null) return NotFound();
 
-        [HttpGet]
-        public IActionResult Get(
-            IInMemoryProductRepository<Product> _repo,
-            [FromQuery] string? search,
-            [FromQuery] Guid? categoryId,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+        if (!ProductValidator.IsValid(dto))
+            return BadRequest("Invalid product");
+
+        existing.Name = dto.Name;
+        existing.SKU = dto.SKU;
+        existing.Price = dto.Price;
+        existing.Quantity = dto.Quantity;
+        existing.CategoryId = dto.CategoryId;
+        existing.UpdatedAt = DateTime.UtcNow;
+
+        _productRepository.Update(existing);
+
+        return NoContent();
+    }
+
+    // DELETE /api/products/{id}
+    [HttpDelete("{id}")]
+    public IActionResult Delete(Guid id)
+    {
+        var existing = _productRepository.GetById(id);
+        if (existing is null) return NotFound();
+
+        _productRepository.Delete(id);
+
+        return NoContent();
+    }
+
+    // BONUS: Custom JSON serialization endpoint
+    [HttpGet("{id}/custom")]
+    public IActionResult GetCustom(Guid id)
+    {
+        var product = _productRepository.GetById(id);
+        if (product is null) return NotFound();
+
+        var options = new JsonSerializerOptions
         {
-            var products = _repo.GetAll()
-                .FilterByCategory(categoryId)
-                .SearchByName(search);
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
 
-            var result = products
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize);
-
-            return Ok(result);
-        }
-
-        // GET: ProductController
-        public ActionResult Index()
+        return new ContentResult
         {
-            return View();
-        }
+            Content = JsonSerializer.Serialize(product, options),
+            ContentType = "application/json"
+        };
+    }
 
-        // GET: ProductController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+    // BONUS: Manual model binding
+    [HttpPost("manual")]
+    public async Task<IActionResult> CreateManual()
+    {
+        using var reader = new StreamReader(Request.Body);
+        var body = await reader.ReadToEndAsync();
 
-        // GET: ProductController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+        var dto = JsonSerializer.Deserialize<CreateProductDto>(body);
 
-        // POST: ProductController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        if (dto is null || !ProductValidator.IsValid(dto))
+            return BadRequest();
 
-        // GET: ProductController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ProductController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ProductController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ProductController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        return Ok(dto);
     }
 }
