@@ -1,0 +1,74 @@
+@if (loading()) {
+<!-- The Spinner -->
+<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://w3.org" fill="none" viewBox="0 0 24 24">
+  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+  <path class="opacity-75" fill="currentColor"
+    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+  </path>
+</svg>
+Processing...
+}
+    
+    
+    <div class="p-6 space-y-4">
+
+      <!-- Filters -->
+      <div class="grid md:grid-cols-3 gap-4">
+        
+        <!-- Search -->
+        <input
+          class="border p-2 rounded w-full"
+          placeholder="Search products..."
+          [formControl]="searchControl"
+        />
+
+        <!-- Category -->
+        <select class="border p-2 rounded" [formControl]="categoryControl">
+          <option value="">All Categories</option>
+          <option *ngFor="let cat of categories()" [value]="cat.id">
+            {{ cat.name }}
+          </option>
+        </select>
+
+        <!-- Page Size -->
+        <select class="border p-2 rounded" [formControl]="pageSizeControl">
+          <option [value]="5">5</option>
+          <option [value]="10">10</option>
+          <option [value]="20">20</option>
+        </select>
+
+      </div>
+
+      <!-- Products -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div
+          *ngFor="let product of products()"
+          (click)="viewDetails(product.id)"
+          class="p-4 border rounded shadow hover:shadow-lg cursor-pointer transition"
+        >
+          <h2 class="text-lg font-bold">{{ product.name }}</h2>
+          <p class="text-gray-600">{{ product.price | currency }}</p>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="flex justify-between items-center">
+        <button
+          class="px-4 py-2 bg-gray-200 rounded"
+          (click)="prevPage()"
+          [disabled]="page() === 1"
+        >
+          Previous
+        </button>
+
+        <span>Page {{ page() }}</span>
+
+        <button
+          class="px-4 py-2 bg-gray-200 rounded"
+          (click)="nextPage()"
+        >
+          Next
+        </button>
+      </div>
+
+    </div>

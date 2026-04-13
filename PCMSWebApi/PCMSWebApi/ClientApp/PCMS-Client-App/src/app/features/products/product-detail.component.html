@@ -1,0 +1,86 @@
+<div class="max-w-2xl mx-auto mt-10 p-8 bg-white rounded-2xl shadow-sm border border-slate-100">
+  
+  @if (isLoading()) {
+    <!-- Full-page Skeleton/Spinner -->
+    <div class="flex flex-col items-center justify-center py-20 space-y-4">
+      <div class="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+      <p class="text-slate-500 animate-pulse">Fetching product details...</p>
+    </div>
+  } @else {
+    <header class="mb-8">
+      <h1 class="text-2xl font-bold text-slate-800">
+        {{ productId() ? `Edit Product: ${form.get('name')?.value}` : 'Create New Product' }}
+      </h1>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-6">
+    
+    <!-- Product Name -->
+    <div class="space-y-1">
+      <label class="text-sm font-semibold text-slate-700">Product Name</label>
+      <input formControlName="name" placeholder="e.g. Wireless Mouse"
+        class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all outline-none"
+        [class.border-red-500]="form.get('name')?.invalid && form.get('name')?.touched" />
+      @if(form.get('name')?.invalid && form.get('name')?.touched) {
+        <p class="text-xs text-red-500 font-medium">Product name is required.</p>
+      }
+    </div>
+
+    <!-- SKU & Category Row -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-1">
+        <label class="text-sm font-semibold text-slate-700">SKU</label>
+        <input formControlName="sku" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg outline-none" />
+      </div>
+
+      <div class="space-y-1">
+        <div class="flex justify-between">
+          <label class="text-sm font-semibold text-slate-700">Category</label>
+          @if(categories().length === 0) {
+            <span class="animate-pulse text-xs text-blue-500">Loading...</span>
+          }
+        </div>
+        <select formControlName="categoryId" 
+          class="w-full px-4 py-2.5 border border-slate-300 rounded-lg bg-white outline-none">
+          <option value="">Select Category</option>
+          @for (cat of categories(); track cat.id) {
+            <option [value]="cat.id">{{ cat.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Price & Quantity -->
+    <div class="grid grid-cols-2 gap-6">
+      <div class="space-y-1">
+        <label class="text-sm font-semibold text-slate-700">Price ($)</label>
+        <input type="number" formControlName="price" 
+          class="w-full px-4 py-2.5 border border-slate-300 rounded-lg outline-none" />
+      </div>
+      <div class="space-y-1">
+        <label class="text-sm font-semibold text-slate-700">Stock Quantity</label>
+        <input type="number" formControlName="quantity" 
+          class="w-full px-4 py-2.5 border border-slate-300 rounded-lg outline-none" />
+      </div>
+    </div>
+
+    <!-- Submit Button with Spinner -->
+    <button type="submit" [disabled]="form.invalid || isSaving()"
+      class="w-full flex items-center justify-center py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-200">
+      
+      @if (isSaving()) {
+        <!-- SVG Spinner -->
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Saving...
+      } @else {
+        Update Product
+      }
+    </button>
+  </form>
+
+
+  }
+</div>

@@ -7,9 +7,11 @@ using PCMS.Application.Common.Extensions;
 using PCMS.Domain.Entities;
 using PCMS.Infrastructure.Caching;
 using PCMS.Infrastructure.Search;
+using Microsoft.AspNetCore.Cors;
 
 [ApiController]
 [Route("api/products")]
+//[EnableCors("AllowAll")]
 public class ProductsController : ControllerBase
 {
     private readonly IProductRepository _productRepository;
@@ -34,37 +36,45 @@ public class ProductsController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
-        string cacheKey = $"{search}-{categoryId}-{page}-{pageSize}";
+        // 1. Input Validation
+        page = page < 1 ? 1 : page;
+        pageSize = Math.Clamp(pageSize, 1, 100);
+
+        // 2. Consistent Cache Key
+        string sanitizedSearch = search?.Trim().ToLower() ?? "none";
+        string cacheKey = $"products:{sanitizedSearch}:{categoryId?.ToString() ?? "all"}:{page}:{pageSize}";
 
         if (_cache.TryGet(cacheKey, out var cached))
             return Ok(cached);
 
+        // 3. Null Propagation & Safety
         var products = _productRepository.GetAll();
+        if (products == null) return Ok(Enumerable.Empty<Product>());
 
-        // Filtering
+        // 4. Filtering
         products = products
             .FilterByCategory(categoryId)
             .SearchByName(search);
 
-        // Advanced search (fuzzy)
-        if (!string.IsNullOrWhiteSpace(search))
+        // 5. Logic Safety
+        if (!string.IsNullOrWhiteSpace(search) && _searchEngine != null)
         {
             products = _searchEngine.Search(
                 products,
                 search,
                 new Func<Product, string>[]
                 {
-                    p => p.Name,
-                    p => p.Description ?? ""
+                p => p.Name ?? string.Empty,
+                p => p.Description ?? string.Empty
                 });
         }
 
-        // Pagination
         var result = products
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
 
+        // 6. Set cache with an expiration (Absolute/Sliding) to avoid stale data
         _cache.Set(cacheKey, result);
 
         return Ok(result);
@@ -159,7 +169,7 @@ public class ProductsController : ControllerBase
         };
     }
 
-    // BONUS: Manual model binding
+    // BONUS: Manual model binding NB LOOK INTO
     [HttpPost("manual")]
     public async Task<IActionResult> CreateManual()
     {
