@@ -1,0 +1,9 @@
+
+    <ul>
+      <ng-container *ngFor="let c of categories()">
+        <li>
+          {{ c.name }} {{c.description ? '- ' + c.description : ''}}
+          <!-- <app-category-tree-node [node]="c"></app-category-tree-node> -->
+        </li>
+      </ng-container>
+    </ul>
