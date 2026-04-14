@@ -70,7 +70,7 @@ https://localhost:7299
 
 ------------------------------------------------------------------------
 
-## ðŸŒ 6. Frontend Setup
+## 6. Frontend Setup
 
 Navigate to Angular app:
 
@@ -86,7 +86,7 @@ npm install
 
 ------------------------------------------------------------------------
 
-## â–¶ï¸ 7. Run Frontend
+## 7. Run Frontend
 
 ``` bash
 ng serve
@@ -98,7 +98,7 @@ http://localhost:4200
 
 ------------------------------------------------------------------------
 
-## ðŸ”— 8. API Configuration (Angular)
+## 8. API Configuration (Angular)
 
 Update environment file:
 
