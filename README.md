@@ -1,14 +1,14 @@
 # PCMS
 Product Catalog Management System
 
-# âš™ï¸ Getting Started (From Existing Repository)
+Getting Started (From Existing Repository)
 
 Follow these steps to run the project locally after cloning the
 repository.
 
 ------------------------------------------------------------------------
 
-## ðŸ“¥ 1. Clone the Repository
+1. Clone the Repository
 
 ``` bash
 git clone https://github.com/Yifourty/PCMS.git
@@ -17,7 +17,7 @@ cd your-repo
 
 ------------------------------------------------------------------------
 
-## ðŸ§° 2. Prerequisites
+2. Prerequisites
 
 Make sure you have installed:
 
@@ -33,7 +33,7 @@ npm install -g @angular/cli
 
 ------------------------------------------------------------------------
 
-## ðŸ”§ 3. Backend Setup
+3. Backend Setup
 
 Navigate to the API project:
 
@@ -52,13 +52,13 @@ dotnet restore
 
 ------------------------------------------------------------------------
 
-## ðŸ—„ï¸ 4. Database Setup
+4. Database Setup
 
-Run migrations to create the database:
+The project uses In Memory databases, one created purley with C3 and the other provided Microsoft.EntityFrameworkCore
 
 ------------------------------------------------------------------------
 
-## â–¶ï¸ 5. Run Backend
+5. Run Backend
 
 ``` bash
 dotnet run
