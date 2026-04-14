@@ -476,6 +476,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+
 # Vim temporary swap files
 *.swp
-/src/Application/FixtureSeasonTeamCoaches/Commands/AddFixtureSeasonTeamCoachCommand/AddFixtureSeasonTeamCoachCommand.cs
+
+.angular

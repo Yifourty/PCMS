@@ -1,0 +1,14 @@
+
+    <ul>
+      <!-- Products Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        @for (category of categories(); track category.id) {
+          <div
+            class="group relative p-4 border border-slate-200 rounded-lg shadow-sm hover:shadow-md hover:border-blue-200 transition-all cursor-pointer bg-white"
+          
+
+            <h2 class="text-lg font-bold text-slate-800 pr-8">{{ category.name }}</h2> - {{ category.description }}
+          </div>
+        }
+      </div>
+    </ul>
