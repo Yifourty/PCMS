@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Cors;
 
 [ApiController]
 [Route("api/products")]
-//[EnableCors("AllowAll")]
 public class ProductsController : ControllerBase
 {
     private readonly IProductRepository _productRepository;
@@ -28,7 +27,6 @@ public class ProductsController : ControllerBase
         _cache = cache;
     }
 
-    // GET /api/products?search=&categoryId=&page=&pageSize=
     [HttpGet]
     public IActionResult GetAll(
         [FromQuery] string? search,

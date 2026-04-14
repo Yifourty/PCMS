@@ -1,7 +1,7 @@
 ﻿using PCMS.Application.Common.Interfaces;
 using PCMS.Domain.Interfaces;
 
-namespace PCMS.Infrastructure.Data
+namespace PCMS.Infrastructure.Data.Repositories
 {
     public class InMemoryRepository<T> : IBaseRepository<T> where T : class, IEntity
     {

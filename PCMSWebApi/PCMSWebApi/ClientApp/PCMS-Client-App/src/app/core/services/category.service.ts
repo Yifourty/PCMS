@@ -1,5 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { ApiService } from "./api.service";
+import { CreateCategory } from "../../shared/models/category.model";
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
@@ -14,7 +15,7 @@ export class CategoryService {
     return this.api.get<any[]>(`${this.baseUrl}/tree`);
   }
 
-  create(category: any) {
+  create(category: CreateCategory) {
     return this.api.post(`${this.baseUrl}`, category);
   }
 }

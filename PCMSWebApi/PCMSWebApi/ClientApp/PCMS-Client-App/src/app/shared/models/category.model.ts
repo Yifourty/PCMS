@@ -10,5 +10,5 @@ export interface Category {
 export interface CreateCategory {
   name: string;
   description?: string;
-  ParentCategoryId?: string;
+  parentCategoryId?: string;
 }

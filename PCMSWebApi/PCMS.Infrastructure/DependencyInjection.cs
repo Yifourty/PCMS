@@ -2,7 +2,7 @@
 using PCMS.Application.Common.Interfaces;
 using PCMS.Domain.Entities;
 using PCMS.Infrastructure.Caching;
-using PCMS.Infrastructure.Data;
+using PCMS.Infrastructure.Data.Repositories;
 using PCMS.Infrastructure.Search;
 
 namespace PCMS.Infrastructure
@@ -13,9 +13,12 @@ namespace PCMS.Infrastructure
         {
 
             services.AddSingleton<IProductRepository, InMemoryProductRepository>();
-            services.AddSingleton<ICategoryRepository, InMemoryCategoryRepository>();
             services.AddSingleton<ProductSearchEngine<Product>>();
             services.AddSingleton<SearchCache>();
+
+            services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+
 
             return services;
         }

@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using System;
 using PCMS.Presentation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddPresentationDI();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseInMemoryDatabase("MyDb"));
 
 // Add CORS services and define the named policy
 builder.Services.AddCors(options =>

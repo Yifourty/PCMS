@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CategoryService } from '../../core/services/category.service';
-import { Category } from '../../shared/models/category.model';
+import { Category, CreateCategory } from '../../shared/models/category.model';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -18,9 +18,9 @@ export class CategoryFormComponent implements OnInit {
   loading = signal<boolean>(false);
 
   form = this.fb.group({
-    name: ['', Validators.required],
-    description: ['sku123', Validators.required],
-    parentCategoryId: ['', Validators.required],
+    name: ['Appliances', Validators.required],
+    description: ['Electrical appliances and gadgets'],
+    parentCategoryId: [''],
   });
 
 
@@ -44,7 +44,6 @@ export class CategoryFormComponent implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        alert('Error loading categories');
       },
     });
   }
@@ -53,7 +52,7 @@ export class CategoryFormComponent implements OnInit {
   submit() {
     if (this.form.invalid) return;
 
-    this.categoryService.create(this.form.value as any).subscribe({
+    this.categoryService.create(this.form.value as CreateCategory).subscribe({
       next: () => this._router.navigate(['../'], {relativeTo: this.route}).then(r =>{}),
       error: () => alert('Error creating category'),
     });
