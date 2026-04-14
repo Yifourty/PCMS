@@ -1,14 +1,11 @@
-# PCMS
-Product Catalog Management System
-
-Getting Started (From Existing Repository)
+# âš™ï¸ Getting Started (From Existing Repository)
 
 Follow these steps to run the project locally after cloning the
 repository.
 
 ------------------------------------------------------------------------
 
-1. Clone the Repository
+## ðŸ“¥ 1. Clone the Repository
 
 ``` bash
 git clone https://github.com/Yifourty/PCMS.git
@@ -17,7 +14,7 @@ cd your-repo
 
 ------------------------------------------------------------------------
 
-2. Prerequisites
+## ðŸ§° 2. Prerequisites
 
 Make sure you have installed:
 
@@ -33,7 +30,7 @@ npm install -g @angular/cli
 
 ------------------------------------------------------------------------
 
-3. Backend Setup
+## ðŸ”§ 3. Backend Setup
 
 Navigate to the API project:
 
@@ -52,13 +49,13 @@ dotnet restore
 
 ------------------------------------------------------------------------
 
-4. Database Setup
+## ðŸ—„ï¸ 4. Database Setup
 
-The project uses In Memory databases, one created purley with C3 and the other provided Microsoft.EntityFrameworkCore
+Run migrations to create the database:
 
 ------------------------------------------------------------------------
 
-5. Run Backend
+## â–¶ï¸ 5. Run Backend
 
 ``` bash
 dotnet run
@@ -70,7 +67,7 @@ https://localhost:7299
 
 ------------------------------------------------------------------------
 
-## 6. Frontend Setup
+## ðŸŒ 6. Frontend Setup
 
 Navigate to Angular app:
 
@@ -86,7 +83,7 @@ npm install
 
 ------------------------------------------------------------------------
 
-## 7. Run Frontend
+## â–¶ï¸ 7. Run Frontend
 
 ``` bash
 ng serve
@@ -98,7 +95,7 @@ http://localhost:4200
 
 ------------------------------------------------------------------------
 
-## 8. API Configuration (Angular)
+## ðŸ”— 8. API Configuration (Angular)
 
 Update environment file:
 
@@ -111,7 +108,7 @@ export const environment = {
 
 ------------------------------------------------------------------------
 
-## 9. Run Tests
+## ðŸ§ª 9. Run Tests
 
 ### Backend
 
@@ -121,10 +118,10 @@ export const environment = {
 
 ------------------------------------------------------------------------
 
-## Common Issues
+## âš ï¸ Common Issues
 
--   CORS errors, Ensure backend allows Angular origin\
--   Migration errors, Check connection string\
--   Port conflicts, Change ports in config files\
--   Node modules issues, Delete `node_modules` and run `npm install`
+-   CORS errors â†’ Ensure backend allows Angular origin\
+-   Migration errors â†’ Check connection string\
+-   Port conflicts â†’ Change ports in config files\
+-   Node modules issues â†’ Delete `node_modules` and run `npm install`
     again
