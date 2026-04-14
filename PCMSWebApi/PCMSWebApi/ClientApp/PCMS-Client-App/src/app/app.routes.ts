@@ -33,14 +33,8 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'products',
+        redirectTo: 'categories',
         pathMatch: 'full'
-      },
-      {
-        path: 'products',
-        loadChildren: () =>
-          import('./features/products/product.routes')
-            .then(m => m.PRODUCT_ROUTES)
       },
       {
         path: 'categories',
@@ -49,10 +43,16 @@ export const routes: Routes = [
             .then(m => m.CATEGORY_ROUTES)
       },
       {
-        path: '**',
-        redirectTo: 'products'
+        path: 'products',
+        loadChildren: () =>
+          import('./features/products/product.routes')
+            .then(m => m.PRODUCT_ROUTES)
       },
-      { path: '', redirectTo: 'products', pathMatch: 'full' }
+      {
+        path: '**',
+        redirectTo: 'categories'
+      },
+      { path: '', redirectTo: 'categories', pathMatch: 'full' }
     ]
   }
 ];

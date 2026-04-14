@@ -5,7 +5,7 @@ using PCMS.Domain.Entities;
 
 namespace PCMS.Infrastructure.Data.Configuration
 {
-    public class LeagueFormatConfiguration : IEntityTypeConfiguration<Category>
+    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {

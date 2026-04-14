@@ -52,7 +52,13 @@ export class CategoryFormComponent implements OnInit {
   submit() {
     if (this.form.invalid) return;
 
-    this.categoryService.create(this.form.value as CreateCategory).subscribe({
+    const categoryData: CreateCategory = {
+      name: this.form.value.name!,
+      description: this.form.value.description as string || undefined,
+      parentCategoryId: this.form.value.parentCategoryId || undefined,
+    };
+
+    this.categoryService.create(categoryData).subscribe({
       next: () => this._router.navigate(['../'], {relativeTo: this.route}).then(r =>{}),
       error: () => alert('Error creating category'),
     });
