@@ -111,7 +111,7 @@ export const environment = {
 
 ------------------------------------------------------------------------
 
-## ðŸ§ª 9. Run Tests
+## 9. Run Tests
 
 ### Backend
 
@@ -121,10 +121,10 @@ export const environment = {
 
 ------------------------------------------------------------------------
 
-## âš ï¸ Common Issues
+## Common Issues
 
--   CORS errors â†’ Ensure backend allows Angular origin\
--   Migration errors â†’ Check connection string\
--   Port conflicts â†’ Change ports in config files\
--   Node modules issues â†’ Delete `node_modules` and run `npm install`
+-   CORS errors, Ensure backend allows Angular origin\
+-   Migration errors, Check connection string\
+-   Port conflicts, Change ports in config files\
+-   Node modules issues, Delete `node_modules` and run `npm install`
     again
